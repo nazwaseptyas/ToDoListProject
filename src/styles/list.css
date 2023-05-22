@@ -35,6 +35,7 @@
 
 .completed-list .list-container {
     text-decoration: line-through;
+    color: #1f602b;
 }
 
 .edit-popup {

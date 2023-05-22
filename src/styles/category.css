@@ -4,7 +4,7 @@ nav ul {
 }
 
 nav ul li {
-    font-size: 12px;
+    font-size: 13px;
     list-style: none;
     padding: 4px 16px;
     background-color: #a0a0a0;
@@ -15,6 +15,6 @@ nav ul li {
 }
 
 nav ul li.active {
-    background-color: #33a348;
+    background-color: #309f44;
     color: white;
 }

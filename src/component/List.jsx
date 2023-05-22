@@ -1,114 +1,115 @@
-import React, { useState } from 'react'
-import DoneIcon from '../assets/done-icon.svg'
-import EditIcon from '../assets/edit-icon.svg'
-import DeleteIcon from '../assets/delete-icon.svg'
+import React, { useState } from 'react';
+import DoneIcon from '../assets/done-icon.svg';
+import EditIcon from '../assets/edit-icon.svg';
+import DeleteIcon from '../assets/delete-icon.svg';
 import PropTypes from 'prop-types';
-import { doneList, editList, removeList } from '../redux/action/todoAction'
-import { useDispatch } from 'react-redux'
+import { doneList, editList, removeList } from '../redux/action/todoAction';
+import { useDispatch } from 'react-redux';
 
 const List = (props) => {
+        const [isEditPopUp, setEditPopUp] = useState(false);
+        const [editInputValue, setEditInputValue] = useState('');
 
-    // toggle pop up untuk edit list
-    const [isEditPopUp, setEditPopUp] = useState(false);
+        const toggleEdit = () => {
+            setEditPopUp(!isEditPopUp);
+            setEditInputValue('');
+        };
 
-    const toggleEdit = () => {
-        setEditPopUp(!isEditPopUp)
-    }
+        const dispatch = useDispatch();
 
-    // memanggil action done, remove, dan edit list dari redux
-    const dispatch = useDispatch();
+        const handleDone = (index) => {
+            dispatch(doneList(index));
+        };
 
-    const handleDone = (index) => {
-        dispatch(doneList(index))
-    }
+        const handleRemove = (index) => {
+            dispatch(removeList(index));
+        };
 
-    const handleRemove = (index) => {
-        dispatch(removeList(index))
-    }
+        const handleEdit = (index, inputValue) => {
+            dispatch(editList(index, inputValue));
+            toggleEdit();
+        };
 
-    const handleEdit = (index, input) => {
-        dispatch(editList(index, input.target[0].value))
-        input.preventDefault()
-        input.target[0].value = null
-        toggleEdit()
-    }
+        const handleSubmit = (e) => {
+            // e.preventDefault();
+            handleEdit(props.urutan, editInputValue);
+        };
 
-    return ( <
-        >
+        const handleChange = (e) => {
+            setEditInputValue(e.target.value);
+        };
 
-        <
-        div className = 'list-container' >
-        <
-        div className = 'left-list' > {
-            props.button &&
+        return ( <
+            >
             <
-            img src = { DoneIcon }
-            alt = ""
-            onClick = {
-                () => handleDone(props.urutan) }
-            />
-        } <
-        p > { props.value } < /p> <
-        /div>
+            div className = 'list-container' >
+            <
+            div className = 'left-list' > {
+                props.button && ( <
+                    img src = { DoneIcon }
+                    alt = ""
+                    onClick = {
+                        () => handleDone(props.urutan) }
+                    />
+                )
+            } <
+            p > { props.value } < /p> <
+            /div> {
+                (props.button &&
+                    <
+                    div className = 'right-list' >
+                    <
+                    img src = { EditIcon }
+                    alt = ""
+                    onClick = {
+                        () => toggleEdit(props.urutan) }
+                    /> <
+                    img src = { DeleteIcon }
+                    alt = ""
+                    onClick = {
+                        () => handleRemove(props.urutan) }
+                    /> <
+                    /div>
+                )
+            }
 
-        {
-            props.button &&
-                <
-                div className = 'right-list' >
-                <
-                img src = { EditIcon }
-            alt = ""
-            onClick = {
-                () => toggleEdit(props.urutan) }
-            /> <
-            img src = { DeleteIcon }
-            alt = ""
-            onClick = {
-                () => handleRemove(props.urutan) }
-            /> <
+            <
             /div>
-        }
 
-        <
-        /div>
+            {
+                isEditPopUp && ( <
+                    div className = 'edit-popup' >
+                    <
+                    form action = ''
+                    onSubmit = { handleSubmit } >
+                    <
+                    label htmlFor = '' > Edit To do </label> <
+                        input type = 'text'
+                    placeholder = { props.value }
+                    value = { editInputValue }
+                    onChange = { handleChange }
+                    /> <
+                    div className = 'button' >
+                    <
+                    p onClick = {
+                        () => toggleEdit(props.urutan) } > Cancel < /p> <
+                    button type = 'submit' > Edit < /button> <
+                    /div> <
+                    /form> <
+                    /div>
+                )
+            }
 
-        { /* pop up edit */ } {
-            isEditPopUp &&
-                <
-                div className = 'edit-popup' >
-                <
-                form action = ""
-            onSubmit = {
-                    (e) => handleEdit(props.urutan, e) } >
-                <
-                label htmlFor = "" > Edit Task < /label> <
-                input type = "text"
-            placeholder = { props.value }
-            /> <
-            div className = 'button' >
-                <
-                p onClick = {
-                    () => toggleEdit(props.urutan) } > Batalkan Edit < /p> <
-                button type = 'submit' > Edit To Do < /button> <
-                /div> <
-                /form> <
-                /div>
-        }
+            {
+                isEditPopUp && < div className = 'overlay' > < /div>} <
+                    />
+            );
+        };
 
-        { /* overlay dari pop up */ } {
-            isEditPopUp &&
-                <
-                div className = 'overlay' > < /div>
-        } <
-        />
-    )
-}
+        List.propTypes = {
+            button: PropTypes.bool.isRequired,
+            value: PropTypes.string.isRequired,
+            urutan: PropTypes.number.isRequired,
+        };
 
-// Cek tipe data prop dengan prop types
-List.propTypes = {
-    button: PropTypes.bool.isRequired,
-    value: PropTypes.string.isRequired,
-    urutan: PropTypes.number.isRequired
-}
-
-export default List
+        export default List;
